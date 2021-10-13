@@ -37,7 +37,6 @@ class StereotypeDetector(pl.LightningModule):
             batch[0][key] = batch[0][key].squeeze()
         outputs = self.model(**batch[0])
         loss = self.criterion(outputs.logits, batch[1])
-
         return loss
 
     def training_step(self, batch, batch_idx) -> STEP_OUTPUT:
@@ -69,7 +68,6 @@ class StereotypeDetector(pl.LightningModule):
             dataset=train_dataset,
             batch_size=self.args.batch_size,
             shuffle=True,
-            persistent_workers=True,
             num_workers=self.args.num_workers,
         )
 
@@ -85,7 +83,6 @@ class StereotypeDetector(pl.LightningModule):
             dataset=valid_dataset,
             batch_size=self.args.batch_size,
             shuffle=True,
-            persistent_workers=True,
             num_workers=self.args.num_workers,
         )
 
@@ -95,7 +92,7 @@ def _get_parser():
     parser.add_argument("--model_name", type=str, default="tunib/electra-ko-base")
     parser.add_argument("--data_dir", type=str, default="./data")
     parser.add_argument("--patience", type=int, default=5)
-    parser.add_argument("--gpus", type=int, default=1)
+    parser.add_argument("--gpus", type=list, default=[0])
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--eps", type=float, default=1e-8)
     parser.add_argument("--batch_size", type=int, default=8)
