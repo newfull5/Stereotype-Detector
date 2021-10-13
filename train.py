@@ -91,7 +91,7 @@ def _get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_name", type=str, default="tunib/electra-ko-base")
     parser.add_argument("--data_dir", type=str, default="./data")
-    parser.add_argument("--patience", type=int, default=5)
+    parser.add_argument("--patience", type=int, default=15)
     parser.add_argument("--gpus", type=list, default=[0])
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--eps", type=float, default=1e-8)
@@ -122,6 +122,7 @@ if __name__ == "__main__":
     ]
 
     trainer = pl.Trainer(
+        val_check_interval=0.25,
         callbacks=callbacks,
         logger=wandb_logger,
         gpus=args.gpus,
