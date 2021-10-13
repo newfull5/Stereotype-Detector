@@ -1,0 +1,5 @@
+plotly
+transformers
+pandas
+torch
+pytorch-lightning
