@@ -15,7 +15,7 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.utilities.types import STEP_OUTPUT, TRAIN_DATALOADERS
 from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import MultiplicativeLR
-from dataset import SensitiveDataset
+from dataset import StereotypeDataset
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
@@ -58,7 +58,7 @@ class StereotypeDetector(pl.LightningModule):
         return [optimizer], [scheduler]
 
     def train_dataloader(self) -> TRAIN_DATALOADERS:
-        train_dataset = SensitiveDataset(
+        train_dataset = StereotypeDataset(
             tokenizer=self.tokenizer,
             data_dir=self.args.data_dir,
             stage="train",
@@ -74,7 +74,7 @@ class StereotypeDetector(pl.LightningModule):
         )
 
     def val_dataloader(self) -> TRAIN_DATALOADERS:
-        valid_dataset = SensitiveDataset(
+        valid_dataset = StereotypeDataset(
             tokenizer=self.tokenizer,
             data_dir=self.args.data_dir,
             stage="valid",
