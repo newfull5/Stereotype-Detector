@@ -1,6 +1,20 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+from transformers import (
+    AutoTokenizer,
+    AutoModelForSequenceClassification,
+)
+
+tokenizer = AutoTokenizer.from_pretrained('dhtocks/tunib-electra-stereotype-classifier')
+model = AutoModelForSequenceClassification.from_pretrained('dhtocks/tunib-electra-stereotype-classifier')
+device = 'cpu'
+
+
+def inference(inputs:str):
+    tokenized = tokenizer(inputs, return_tensors="pt", max_length=512, padding="max_length", truncation=True).to(device)
+    outputs = model(**tokenized)
+    return outputs.logits.tolist()
 
 
 def write_header():
@@ -12,10 +26,10 @@ def write_header():
 
 cols = ['stereotype','anti-stereotype','unrelated','profession','race','gender','religion']
 
+
 def write_textbox():
     input_text = st.text_area(label='Write your sentence', key=1, height=40)
     button = st.button(label='Run')
-
 
     df = pd.DataFrame(
         [["Product A", 5.6], ["Product B", 5.8]],
@@ -26,7 +40,9 @@ def write_textbox():
 
     if button:
         with st.spinner(text='This may take a moment...'):
-            output = ('input_text')
+            outputs = inference(input_text)
+
+        st.write(outputs)
         st.plotly_chart(fig)
 
     else:

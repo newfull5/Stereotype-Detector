@@ -15,7 +15,7 @@ def _get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_name", type=str, default="tunib/electra-ko-base")
     parser.add_argument("--dir_path", type=str, default="/home/ckpt")
-    parser.add_argument("--file_path", type=str, default="")
+    parser.add_argument("--file_path", type=str, default="epoch=2-valid_loss=0.08925262093544006.ckpt")
     parser.add_argument("--num_labels", type=int, default=7)
     return parser
 
