@@ -1,14 +1,20 @@
-import torch
+import yaml
 import argparse
-from tqdm import tqdm
+import torch
 import pandas as pd
-import numpy as np
-from sklearn import metrics
 import os
+import numpy as np
+from tqdm import tqdm
+from sklearn.metrics import f1_score, precision_score, recall_score
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
 )
+
+
+with open("./config.yaml") as f:
+    threshold_dict = yaml.load(f, Loader=yaml.FullLoader)
+    threshold_dict = threshold_dict["threshold"]
 
 
 def _get_parser():
@@ -16,6 +22,7 @@ def _get_parser():
     parser.add_argument("--model_name", type=str, default="tunib/electra-ko-base")
     parser.add_argument("--dir_path", type=str, default="/home/ckpt")
     parser.add_argument("--file_path", type=str, default="")
+    parser.add_argument("--gpus", type=list, default=[0])
     parser.add_argument("--num_labels", type=int, default=7)
     parser.add_argument("--data_path", type=str, default="./data/test.csv")
     return parser
@@ -31,6 +38,7 @@ model = AutoModelForSequenceClassification.from_pretrained(
 )
 
 trained_model_dict = torch.load(f"{args.dir_path}/{args.file_path}")["state_dict"]
+
 model_dict = dict()
 
 for key in trained_model_dict:
@@ -42,18 +50,9 @@ model.eval()
 
 df = pd.read_csv(args.data_path, encoding="utf-8", index_col=0)
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
 comments = df["comment"]
 comments = list(comments)
-cols = [
-    "stereotype",
-    "anti-stereotype",
-    "unrelated",
-    "profession",
-    "race",
-    "gender",
-    "religion",
-]
+cols = threshold_dict.keys()
 diction = {}
 
 for col in cols:
@@ -75,19 +74,24 @@ for idx, my_input in tqdm(enumerate(comments)):
     label = np.array(label)
 
     for i, col in enumerate(cols):
-        diction[col].append(logits[i])
+        diction[col].append(0 if threshold_dict[col] > logits[i] else 1)
         diction[f"{col}_label"].append(label[i])
 
+f1_scores = []
+precisions = []
+recalls = []
 
 for col in cols:
-    pre, rec, threshold = metrics.precision_recall_curve(
-        np.array(diction[f"{col}_label"]), np.array(diction[f"{col}"])
-    )
-    temp = []
+    f1 = f1_score(diction[col], diction[f"{col}_label"])
+    prec = precision_score(diction[col], diction[f"{col}_label"])
+    rec = recall_score(diction[col], diction[f"{col}_label"])
+    f1_scores.append(f1)
+    precisions.append(prec)
+    recalls.append(rec)
+    print(f"{col} f1: {f1}")
+    print(f"{col} precision: {prec}")
+    print(f"{col} recall: {rec}")
 
-    for i in range(min(len(threshold), len(rec), len(pre))):
-        temp.append([threshold[i], (2 * rec[i] * pre[i]) / (rec[i] + pre[i])])
-
-    t1, s1 = sorted(temp, key=lambda x: x[-1])[-1]
-
-    print(f"{col}: {t1}")
+print(f"macro f1 score : {sum(f1_scores) / len(f1_scores)}")
+print(f"macro precision score : {sum(precisions) / len(precisions)}")
+print(f"macro recall score : {sum(recalls) / len(recalls)}")
