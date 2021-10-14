@@ -8,7 +8,7 @@ Korean stereotype sentence classifier using [K-StereoSet](https://github.com/Jon
 - you can test this model easily in demo page  
 - LINK: https://share.streamlit.io/newfull5/stereotype-detector/demo.py
 
-<img src="https://user-images.githubusercontent.com/52832716/137329613-38566eaa-5481-4b56-849a-4882f083fe98.png" width="500">
+<img src="https://user-images.githubusercontent.com/52832716/137329613-38566eaa-5481-4b56-849a-4882f083fe98.png" width="800">
 
 ## Dataset
 
