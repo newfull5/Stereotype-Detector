@@ -8,7 +8,7 @@
 
 ◆ This model can classify whether the text has a stereotype or not. If so, you can see what stereotypes are included (profession, race, gender, religion)
 
-◆ You can test this models directly on the [**web demo**]() page and also you can use this model with Hugging Face **transformers library.**
+◆ You can test this models directly on the [**web demo**](https://share.streamlit.io/newfull5/stereotype-detector/demo.py) page and also you can use this model with Hugging Face **transformers library.**
 
 ◆ This model is made using <a href="https://github.com/JongyoonSong/K-StereoSet">K-StereoSet</a> with <a href="https://github.com/tunib-ai/tunib-electra">TUNiB-Electra</a>
 
