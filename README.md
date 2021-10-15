@@ -1,7 +1,16 @@
-# Korean Stereotype Detector
 
-Korean stereotype sentence classifier using [K-StereoSet](https://github.com/JongyoonSong/K-StereoSet) with [TUNiB-Electra](https://github.com/tunib-ai/tunib-electra)
+<h1 align="center">
+    <img src="https://user-images.githubusercontent.com/52832716/137499614-0206f0a8-9bee-4974-b318-32f313e0b8bb.png" width="650">
+</h1>
 
+
+◆ Stereotype means false beliefs learned and planted by social norms or customs. For example, Programmers are good at fixing computers, programmers have poor social skills, etc...
+
+◆ This model can classify whether the text has a stereotype or not. If so, you can see what stereotypes are included (profession, race, gender, religion)
+
+◆ You can test this models directly on the [**web demo**]() page and also you can use this model with Hugging Face **transformers library.**
+
+◆ This model is made using <a href="https://github.com/JongyoonSong/K-StereoSet">K-StereoSet</a> with <a href="https://github.com/tunib-ai/tunib-electra">TUNiB-Electra</a>
 
 ## Web demo
 
@@ -11,6 +20,8 @@ Korean stereotype sentence classifier using [K-StereoSet](https://github.com/Jon
 <img src="https://user-images.githubusercontent.com/52832716/137329613-38566eaa-5481-4b56-849a-4882f083fe98.png" width="800">
 
 ## Dataset
+
+In the actual dataset, five people classified whether or not there was a stereotype in the sentence, but trained with the most selected type as correct.
 
 - There are **12,688** human-labeled comments in total. 
 - They ar splitted into 10,688 train set, 1000 test set and 1000 valid set
@@ -48,7 +59,16 @@ stereotype, anti-stereotype, unrelated, profession, race, gender, religion, comm
 
 ## Usage
 
-- training
+You can use this model directly with [transformers](https://github.com/huggingface/transformers) library:
+
+```python
+from transformers import AutoModel, AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained('dhtocks/tunib-electra-stereotype-classifier')
+model = AutoModel.from_pretrained('dhtocks/tunib-electra-stereotype-classifier')
+```
+
+- training code
 
 ~~~
 python3 train.py --model_name tunib/electra-ko-base \
@@ -66,7 +86,7 @@ python3 threshold.py --model_name tunib/electra-ko-base \
                      --data_path TEST_DATA_PATH
 ~~~
 
-- test
+- testint code
 
 ~~~
 python3 score.py --model_name tunib/electra-ko-base \
